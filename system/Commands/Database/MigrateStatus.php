@@ -148,7 +148,7 @@ class MigrateStatus extends BaseCommand
 				continue;
 			}
 
-			$history = $runner->getHistory();
+			$history = $runner->getHistory($group);
 			ksort($migrations);
 
 			foreach ($migrations as $uid => $migration)

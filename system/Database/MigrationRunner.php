@@ -217,7 +217,7 @@ class MigrationRunner
 		}
 
 		// Remove any migrations already in the history
-		foreach ($this->getHistory($this->group) as $history)
+		foreach ($this->getHistory($group) as $history)
 		{
 			unset($migrations[$this->getObjectUid($history)]);
 		}
@@ -812,11 +812,11 @@ class MigrationRunner
 	 *
 	 * @return array
 	 */
-	public function getHistory(string $group = 'default'): array
+	public function getHistory(string $group = null): array
 	{
 		$this->ensureTable();
 
-		$criteria = ['group' => $group];
+		if ($group) $criteria = ['group' => $group];
 
 		// If a namespace was specified then use it
 		if ($this->namespace)
@@ -865,11 +865,11 @@ class MigrationRunner
 		$this->ensureTable();
 
 		$batches = $this->db->table($this->table)
-						  ->select('batch')
-						  ->distinct()
-						  ->orderBy('batch', 'asc')
-						  ->get()
-						  ->getResultArray();
+							->select('batch')
+							->distinct()
+							->orderBy('batch', 'asc')
+							->get()
+							->getResultArray();
 
 		return array_map('intval', array_column($batches, 'batch'));
 	}
@@ -917,11 +917,11 @@ class MigrationRunner
 		}
 
 		$migration = $this->db->table($this->table)
-			->where('batch', $batch)
-			->orderBy('id', 'asc')
-			->limit(1)
-			->get()
-			->getResultObject();
+							  ->where('batch', $batch)
+							  ->orderBy('id', 'asc')
+							  ->limit(1)
+							  ->get()
+							  ->getResultObject();
 
 		return count($migration) ? $migration[0]->version : '0';
 	}
@@ -946,11 +946,11 @@ class MigrationRunner
 		}
 
 		$migration = $this->db->table($this->table)
-			  ->where('batch', $batch)
-			  ->orderBy('id', 'desc')
-			  ->limit(1)
-			  ->get()
-			  ->getResultObject();
+							  ->where('batch', $batch)
+							  ->orderBy('id', 'desc')
+							  ->limit(1)
+							  ->get()
+							  ->getResultObject();
 
 		return count($migration) ? $migration[0]->version : 0;
 	}
